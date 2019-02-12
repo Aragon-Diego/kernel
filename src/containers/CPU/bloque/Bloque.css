@@ -26,3 +26,29 @@
     padding-top:3px;
     padding-left:3px;
 }
+.CPU input {
+    width: 30px;
+    float: left;
+}
+.CPU .parte1{
+    width: 100%;
+    height:60%;
+}
+.CPU .parte2 {
+    width: 100%;
+    height: 40%;
+}
+.parte1 select{
+    margin-left:15%;
+    margin-top:10%;
+}
+.parte2 p,.parte2 input{
+    float: left; 
+}
+.parte2 p{
+    margin-top:3px;
+    margin-left:40px;
+}
+.parte2 input{
+    margin-left:20px;
+}
