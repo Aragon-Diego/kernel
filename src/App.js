@@ -1,25 +1,28 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
-
+import Contenedor from './containers/Contenedor';
+import Input from './containers/Input';
 class App extends Component {
+  state={
+    arreglo:"",
+  }
+  printTxtHandler=async(event)=>{
+    let file = new FileReader();
+    let arregloDeTxt;
+    file.onload=()=>{
+      arregloDeTxt=file.result;
+      this.setState({
+        arreglo: arregloDeTxt,
+      });
+      console.log(this.state.arreglo)
+    };
+    file.readAsText(event.target.files[0]);
+  };
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        <Contenedor/>
+        <h1>{this.state.arreglo}</h1>
+        <input type="file" onChange={this.printTxtHandler}></input>
       </div>
     );
   }

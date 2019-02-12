@@ -1,0 +1,23 @@
+.Bloque header{
+    width: 100%;
+    height:10%;
+    text-align: center;
+    font-size: 15px;
+}
+.Bloque section{
+    width:100%;
+    height:90%;
+    background-color: white;
+}
+.Scheduling{
+    width:60%;
+    padding:2px;
+    float: left;
+    height:100%;
+}
+.CPU{
+    width:40%;
+    padding:2px;
+    float: left;
+    height:100%;
+}
