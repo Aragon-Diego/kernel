@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Contenedor from './containers/Contenedor';
-import Input from './containers/Input';
+
 class App extends Component {
   state={
     arreglo:"",
@@ -9,7 +9,7 @@ class App extends Component {
     let file = new FileReader();
     let arregloDeTxt;
     file.onload=()=>{
-      arregloDeTxt=file.result;
+      arregloDeTxt=file.result.split('\n');
       this.setState({
         arreglo: arregloDeTxt,
       });

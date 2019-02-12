@@ -10,7 +10,7 @@ const Contenedor = (props) =>{
         <header>My little SO</header>
         <Inter tiempo="1"/>
         <Proces/>
-        <Cpu/>
+        <Cpu proceso={""}/ >
         <Memoria/>
     </div>  
  ); 

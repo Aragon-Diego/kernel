@@ -8,7 +8,7 @@ const Bloque = (props) =>{
                 <p>{props.titulo}</p>
             </header>
             <section>
-                
+                {props.relleno}  
             </section>
         </div>
     );
