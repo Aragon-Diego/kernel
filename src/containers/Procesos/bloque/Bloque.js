@@ -7,8 +7,8 @@ const Bloque = (props) =>{
             <header>
                 <p>{props.titulo}</p>
             </header>
-            <section>
-                
+            <section className="scroll">
+                {props.relleno}
             </section>
         </div>
     );

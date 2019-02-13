@@ -14,6 +14,7 @@
     width:100%;
     height:80%;
     background-color: white;
+    
 }
 .Dominio,
 .Input{
@@ -41,3 +42,13 @@
     margin-bottom: 5px;
     
 }
+.Bloque .scroll{
+    overflow: scroll;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.bloque .scroll::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+}
+
