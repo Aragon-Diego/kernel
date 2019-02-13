@@ -7,10 +7,10 @@ import Memoria from './Memoria/Memoria';
 
 class Contenedor extends Component{
     state={
-        listo:[""],
-        bloqueda:[""],
-        finalizada:[""],
-        corriendo:[""],
+        listo:[],
+        bloqueda:[],
+        finalizada:[],
+        corriendo:[],
         procesoN:{
             nombre:"",
             tpo:"",
@@ -48,13 +48,21 @@ class Contenedor extends Component{
             procesoN:{quantum: this.state.quantum}
         });
     }
-    
+    addProcesoHandler=()=>{
+        let arreglo=[...this.state.listo];
+        arreglo.push(this.procesoN);
+        this.setState({
+            listo:arreglo
+        })
+    }
     render(){
         return(
             <div className="Contenedor">
                 <header>My little SO</header>
                 <Inter tiempo={this.state.tiempoActual}/>
-                <Procesos listo={this.state.listo} corriendo={this.state.corriendo} bloqueados={this.state.bloqueda} finalizado={this.state.finalizada}/>
+                <Procesos listo={this.state.listo} corriendo={this.state.corriendo} bloqueados={this.state.bloqueda} 
+                finalizado={this.state.finalizada} agregar={this.addProcesoHandler}
+                nombre={this.changeNameHandler} pagina={this.changePagHandler} ejecTotal={this.changeEjecTotalHandler}/>
                 <Cpu proceso={this.state.corriendo}/>
                 <Memoria/>
             </div>  

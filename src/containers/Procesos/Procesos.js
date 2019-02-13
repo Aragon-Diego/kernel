@@ -11,7 +11,8 @@ const Procesos=(props)=>{
                 <p>Procesos</p>
             </div>
             <div className="bloques">
-                <BloqueN titulo="New"/>
+                <BloqueN titulo="New" agregar={props.agregar} nombre={props.nombre} pagina={props.pagina}
+                ejecTotal={props.ejecTotal}/>
                 <Bloque titulo="Ready" relleno={props.listo}/>
                 <Bloque titulo="Running" relleno={props.corriendo}/>
                 <Bloque titulo="Blocked" relleno={props.bloqueados}/>
