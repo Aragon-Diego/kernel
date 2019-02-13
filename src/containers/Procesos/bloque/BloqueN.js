@@ -10,9 +10,9 @@ class BloqueN extends Component{
                 </header>
                 <section className="Agregar">
                     <div className="Dominio">
-                        <p>Nombre</p>
-                        <p>Páginas</p>
-                        <p>Ejec total</p>
+                        <p>Nombre:</p>
+                        <p>Páginas:</p>
+                        <p>Ejec total:</p>
                     </div>
                     <div className="Inputs">
                         <input></input>
