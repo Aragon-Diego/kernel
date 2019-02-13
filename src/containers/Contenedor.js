@@ -26,31 +26,33 @@ class Contenedor extends Component{
         quantum:null,
     }
     changeNameHandler=(event)=>{
-        let nombre=event;
+        let nombre=event.target.value;
         this.setState({
-            procesoN:{nombre:nombre}
+            procesoN:{...this.state.procesoN, nombre:nombre}
         });
     }
     changePagHandler=(event)=>{
-        let pagina = event;
+        let pagina = event.target.value;
+        console.log(pagina)
         this.setState({
-            procesoN:{pag: pagina}
+            procesoN:{...this.state.procesoN,pag: pagina}
         });
     }
     changeEjecTotalHandler=(event)=>{
-        let ejecTotal = event;
+        let ejecTotal = event.target.value;
         this.setState({
-            procesoN:{ejecTotal: ejecTotal},
-            procesoN:{tpo:this.state.tiempoActual},
-            procesoN:{asignado:0},
-            procesoN:{envejecimiento:0},
-            procesoN:{restante: ejecTotal},
-            procesoN:{quantum: this.state.quantum}
+            procesoN:{...this.state.procesoN,ejecTotal: ejecTotal},
+            procesoN:{...this.state.procesoN,tpo:this.state.tiempoActual},
+            procesoN:{...this.state.procesoN,asignado:0},
+            procesoN:{...this.state.procesoN,envejecimiento:0},
+            procesoN:{...this.state.procesoN,restante: ejecTotal},
+            procesoN:{...this.state.procesoN,quantum: this.state.quantum}
         });
     }
     addProcesoHandler=()=>{
         let arreglo=[...this.state.listo];
-        arreglo.push(this.procesoN);
+        arreglo.push(this.state.procesoN);
+        console.log(arreglo);
         this.setState({
             listo:arreglo
         })
