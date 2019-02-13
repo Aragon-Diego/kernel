@@ -18,7 +18,7 @@ class Contenedor extends Component{
             envejecimiento:"",
             restante:"",
             quantum:"",
-            ejecTotal:"",
+            ejecTotal: "",
             pag:""
         },
         tiempoActual:0,
@@ -40,13 +40,16 @@ class Contenedor extends Component{
     }
     changeEjecTotalHandler=(event)=>{
         let ejecTotal = event.target.value;
+        console.log("ejecTotal " + ejecTotal)
+        let tiempoA=this.state.tiempoActual;
         this.setState({
-            procesoN:{...this.state.procesoN,ejecTotal: ejecTotal},
-            procesoN:{...this.state.procesoN,tpo:this.state.tiempoActual},
-            procesoN:{...this.state.procesoN,asignado:0},
-            procesoN:{...this.state.procesoN,envejecimiento:0},
-            procesoN:{...this.state.procesoN,restante: ejecTotal},
-            procesoN:{...this.state.procesoN,quantum: this.state.quantum}
+            procesoN:{...this.state.procesoN,ejecTotal: ejecTotal,
+                tpo:tiempoA,
+                asignado:0,
+                envejecimiento:0,
+                restante: ejecTotal,
+                quantum: this.state.quantum
+            }
         });
     }
     addProcesoHandler=()=>{
@@ -57,15 +60,23 @@ class Contenedor extends Component{
             listo:arreglo
         })
     }
+    ejecutarHandler=()=>{
+        let tiempoA=this.state.tiempoActual+1;
+        let listoActualizado = this.state.listo;
+        this.setState({
+            tiempoActual:tiempoA,
+            listo:listoActualizado
+        })
+    }
     render(){
         return(
             <div className="Contenedor">
                 <header>My little SO</header>
-                <Inter tiempo={this.state.tiempoActual}/>
+                <Inter tiempo={this.state.tiempoActual} ejecutar={this.ejecutarHandler}/>
                 <Procesos listo={this.state.listo} corriendo={this.state.corriendo} bloqueados={this.state.bloqueda} 
                 finalizado={this.state.finalizada} agregar={this.addProcesoHandler}
                 nombre={this.changeNameHandler} pagina={this.changePagHandler} ejecTotal={this.changeEjecTotalHandler}/>
-                <Cpu proceso={this.state.corriendo}/>
+                <Cpu proceso={this.state.listo[0]}/>
                 <Memoria/>
             </div>  
         );

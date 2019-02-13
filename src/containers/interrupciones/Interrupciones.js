@@ -5,9 +5,7 @@ const Interrupciones = (props) =>{
     return(
         <div className="Conten">
             <Contador tiempo={props.tiempo}/>
-            <select className="select1">
-                <option value="Ejecutar">Ejecutar página</option>
-            </select>
+            <button onClick={props.ejecutar}>Ejecutar página</button>
             <p className="inter1">Interrupcion: </p>
             <select className="select2">
                 <option value="SVC1">SVC de solicitud de I/O</option>

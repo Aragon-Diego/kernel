@@ -2,13 +2,14 @@ import React from 'react';
 import './Cpu.css';
 import Bloque from './bloque/Bloque';
 const Cpu = (props) =>{
+    let proceso=props.proceso ? props.proceso:"";
     let procesoEnRunning=[
-    <p className="relleno">Nombre: {props.proceso.nombre}</p>,
-    <p className="relleno">Tpo llegada: {props.proceso.tpo}</p>,
-    <p className="relleno">CPU Asignado: {props.proceso.asignado}</p>,
-    <p className="relleno">Envejecimiento: {props.proceso.envejecimineto}</p>,
-    <p className="relleno">CPU Restante: {props.proceso.restane}</p>,
-    <p className="relleno">Quantum restante: {props.proceso.quantum}</p>
+    <p className="relleno">Nombre: {proceso.nombre}</p>,
+    <p className="relleno">Tpo llegada: {proceso.tpo}</p>,
+    <p className="relleno">CPU Asignado: {proceso.asignado}</p>,
+    <p className="relleno">Envejecimiento: {proceso.envejecimiento}</p>,
+    <p className="relleno">CPU Restante: {proceso.restante}</p>,
+    <p className="relleno">Quantum restante: {proceso.quantum}</p>
     ];
     let CPU=[
         <div className="parte1">
