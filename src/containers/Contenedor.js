@@ -12,7 +12,7 @@ class Contenedor extends Component{
         finalizada:[],
         corriendo:[],
         procesoN:{
-            nombre:1,
+            nombre:0,
             tpo:"",
             asignado:"",
             envejecimiento:"",
@@ -23,10 +23,12 @@ class Contenedor extends Component{
             hrrn:""
         },
         tiempoActual:0,
-        schedule:"fifo",
+        schedule:"FIFO",
         quantum:null,
         arreglo:"",
-        numeroProcesoActual:1
+        numeroProcesoActual:1,
+        valuePag:"",
+        valueEjec:""
     };
     changeNameHandler=(nombre1)=>{
         let nombre=nombre1;
@@ -44,21 +46,31 @@ class Contenedor extends Component{
     changeEjecTotalHandler=(event)=>{
         let ejecTotal = event.target.value;
         console.log("ejecTotal " + ejecTotal)
-        let tiempoA=this.state.tiempoActual;
         this.setState({
-            procesoN:{...this.state.procesoN,ejecTotal: ejecTotal,
-                tpo:tiempoA,
-                asignado:0,
-                envejecimiento:0,
-                restante: ejecTotal,
-                quantum: this.state.quantum
+            procesoN:{...this.state.procesoN,
+                ejecTotal: ejecTotal,
             }
         });
     };
-    addProcesoHandler=()=>{
+    llenarProcesoN=()=>{
+        let tiempoA=this.state.tiempoActual;
+        this.setState({
+             procesoN:{...this.setState.procesoN,
+                tpo: tiempoA,
+                asignado: 0,
+                envejecimiento: 0,
+                restante: this.state.procesoN.ejecTotal,
+                quantum: this.state.quantum
+            },
+        })
+    }
+    addProcesoHandler=async()=>{
+        await this.llenarProcesoN()
+        await this.ejecutarHandler()
         let arreglo=[...this.state.listo];
-        let numeroProcesoActualMasUno=this.state.numeroProcesoActual+1;
-        this.changeNameHandler(numeroProcesoActualMasUno);
+        let numeroProcesoActualMasUno =this.state.numeroProcesoActual;
+        await this.changeNameHandler(numeroProcesoActualMasUno);
+        numeroProcesoActualMasUno = this.state.numeroProcesoActual + 1;
         arreglo.push(this.state.procesoN);
         console.log(arreglo);
         this.setState({
@@ -101,20 +113,26 @@ class Contenedor extends Component{
         };
         file.readAsText(event.target.files[0]);
     };
+    changeScheduleHandler=(value)=>{
+        console.log(value);
+        this.setState({
+            schedule:value
+        })
+    }
     render(){
         return(
             <div>
-            <div className="Contenedor">
-                <header>My little SO</header>
-                <Inter tiempo={this.state.tiempoActual} ejecutar={this.ejecutarHandler} btnBloqueo={this.BlockHandler}/>
-                <Procesos listo={this.state.listo} corriendo={this.state.listo[0]} bloqueados={this.state.bloqueado} 
-                finalizado={this.state.finalizada} agregar={this.addProcesoHandler}
-                nombre={this.changeNameHandler} pagina={this.changePagHandler} ejecTotal={this.changeEjecTotalHandler} nombreAutomatico={this.state.numeroProcesoActual}/>
-                <Cpu proceso={this.state.listo[0]}/>
-                <Memoria/>
-            </div>
-            <h1>{this.state.arreglo}</h1>
-            <input type="file" onChange={this.printTxtHandler}></input>
+                <div className="Contenedor">
+                    <header>My little SO</header>
+                    <Inter tiempo={this.state.tiempoActual} ejecutar={this.ejecutarHandler} btnBloqueo={this.BlockHandler}/>
+                    <Procesos listo={this.state.listo} corriendo={this.state.listo[0]} bloqueados={this.state.bloqueado} 
+                    finalizado={this.state.finalizada} agregar={this.addProcesoHandler}
+                    nombre={this.changeNameHandler} pagina={this.changePagHandler} ejecTotal={this.changeEjecTotalHandler} nombreAutomatico={this.state.numeroProcesoActual}/>
+                    <Cpu proceso={this.state.listo[0]} cambio={this.changeScheduleHandler}/>
+                    <Memoria/>
+                </div>
+                <h1>{this.state.arreglo}</h1>
+                <input type="file" onChange={this.printTxtHandler}></input>
             </div> 
         );
     }

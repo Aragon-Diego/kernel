@@ -1,11 +1,38 @@
-import React from 'react';
+
+import React,{Component} from 'react';
 import './Bloque.css';
 
-const BloqueN = (props) =>{
-    return(
-        <div className="Bloque">
+class BloqueN extends Component{
+    state={
+        valuePag:"",
+        valueEjec:""
+    }
+    changePag=(event)=>{
+        let valor=event.target.value;
+        this.setState({
+            valuePag:valor
+        })
+        this.props.pagina(event)
+    }
+    changeEjec=(event)=>{
+        let valor=event.target.value;
+        this.setState({
+            valueEjec:valor
+        })
+        this.props.ejecTotal(event)
+    }
+    clickAgregar=()=>{
+        this.setState({
+            valuePag:"",
+            valueEjec:""
+        })
+        this.props.agregar();
+    }
+    render(){
+        return(
+            <div className="Bloque">
             <header>
-                <p>{props.titulo}</p>
+                <p>{this.props.titulo}</p>
             </header>
             <section className="Agregar">
                 <div className="Dominio">
@@ -14,14 +41,15 @@ const BloqueN = (props) =>{
                     <p>Ejec total:</p>
                 </div>
                 <div className="Inputs">
-                    <input placeholder={props.nombreAuto} disabled="true"></input>
-                    <input onChange={props.pagina}></input>
-                    <input onChange={props.ejecTotal}></input>
+                    <input value={this.props.nombreAuto} disabled="true"></input>
+                    <input onChange={this.changePag} value={this.state.valuePag}></input>
+                    <input onChange={this.changeEjec} value={this.state.valueEjec}></input>
                 </div>
-                <button onClick={props.agregar}>Agregar</button>
+                <button onClick={this.clickAgregar}>Agregar</button>
             </section>
         </div>
-    );
+        );
+    }
 };
 
 
