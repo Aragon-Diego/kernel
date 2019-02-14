@@ -12,7 +12,7 @@ const Procesos=(props)=>{
     }
     });
     let corriendo=props.corriendo?<Proceso nombre={props.corriendo.nombre} numero={0}/>:"";
-    let bloqueados=props.bloqueados.map((proceso,index)=>{return(<Proceso nombre={proceso.nombre} numero={index} key={index}/>);});
+    let bloqueados=props.bloqueados.map((proceso,index)=>{return(<Proceso nombre={proceso.nombre} numero={1} key={index}/>);});
     return(
         <div className="divProcesos">
             <div className="titulo">

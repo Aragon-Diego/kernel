@@ -75,15 +75,19 @@ class Contenedor extends Component{
         })
     };
     BlockHandler=()=>{
-        let listoQuitado=[...this.state.listo];
-        listoQuitado=listoQuitado.reverse();
-        let bloqueado=listoQuitado.pop();
-        listoQuitado=listoQuitado.reverse();
-        let arrBloqueados=[...this.state.bloqueado,bloqueado];
-        this.setState({
-            bloqueado:arrBloqueados,
-            listo:listoQuitado
-        })
+        if(this.state.listo.length!=0){
+            let listoQuitado=[...this.state.listo];
+            listoQuitado=listoQuitado.reverse();
+            let bloqueado=listoQuitado.pop();
+            listoQuitado=listoQuitado.reverse();
+            let arrBloqueados=[...this.state.bloqueado,bloqueado];
+            this.setState({
+                bloqueado:arrBloqueados,
+                listo:listoQuitado
+            })
+        }else{
+            return
+        } 
     }
     printTxtHandler = async (event) => {
         let file = new FileReader();
