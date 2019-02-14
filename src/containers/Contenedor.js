@@ -87,7 +87,13 @@ class Contenedor extends Component{
             }else{
                 proceso.envejecimiento+=1;
             }
-            listaActualizada.push(proceso);
+            if(proceso.restante!=0){
+                listaActualizada.push(proceso);
+            }else{
+             this.setState({
+                finalizada:[...this.state.finalizada,proceso]
+             })   
+            }
         }
         console.log(listaActualizada);
         this.setState({

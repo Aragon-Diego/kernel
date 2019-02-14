@@ -13,6 +13,7 @@ const Procesos=(props)=>{
     });
     let corriendo=props.corriendo?<Proceso nombre={props.corriendo.nombre} numero={0}/>:"";
     let bloqueados=props.bloqueados.map((proceso,index)=>{return(<Proceso nombre={proceso.nombre} numero={1} key={index}/>);});
+    let final=props.finalizado.map((proceso,index)=>{return(<Proceso nombre={proceso.nombre} numero={1} key={index}/>);});
     return(
         <div className="divProcesos">
             <div className="titulo">
@@ -24,7 +25,7 @@ const Procesos=(props)=>{
                 <Bloque titulo="Ready" relleno={listo}/>
                 <Bloque titulo="Running" relleno={corriendo}/>
                 <Bloque titulo="Blocked" relleno={bloqueados}/>
-                <Bloque titulo="Finished" relleno={props.finalizado}/>
+                <Bloque titulo="Finished" relleno={final}/>
             </div>
         </div>
     );
