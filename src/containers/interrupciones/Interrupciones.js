@@ -15,6 +15,7 @@ const Interrupciones = (props) =>{
                 <option value="Quantum_Expirado">Externa de quantum expirado</option>
                 <option value="I/O">Dispositivo I/O</option>
             </select>
+            <button onClick={props.btnBloqueo}>Ejecutar</button>
         </div>
     );
 };

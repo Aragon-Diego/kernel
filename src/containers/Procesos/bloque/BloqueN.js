@@ -14,7 +14,7 @@ const BloqueN = (props) =>{
                     <p>Ejec total:</p>
                 </div>
                 <div className="Inputs">
-                    <input onChange={props.nombre}></input>
+                    <input placeholder={props.nombreAuto} disabled="true"></input>
                     <input onChange={props.pagina}></input>
                     <input onChange={props.ejecTotal}></input>
                 </div>
