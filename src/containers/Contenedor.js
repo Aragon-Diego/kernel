@@ -27,8 +27,6 @@ class Contenedor extends Component{
         quantum:null,
         arreglo:"",
         numeroProcesoActual:1,
-        valuePag:"",
-        valueEjec:""
     };
     changeNameHandler=(nombre1)=>{
         let nombre=nombre1;
@@ -80,10 +78,21 @@ class Contenedor extends Component{
     };
     ejecutarHandler=()=>{
         let tiempoA=this.state.tiempoActual+1;
-        let listoActualizado = this.state.listo;
+        let listaActualizada=[];
+        for(let i =0;i<this.state.listo.length;i++){
+            let proceso=this.state.listo[i];
+            if(i===0){
+                proceso.asignado+=1;
+                proceso.restante-=1;
+            }else{
+                proceso.envejecimiento+=1;
+            }
+            listaActualizada.push(proceso);
+        }
+        console.log(listaActualizada);
         this.setState({
             tiempoActual:tiempoA,
-            listo:listoActualizado
+            listo:listaActualizada,
         })
     };
     BlockHandler=()=>{
