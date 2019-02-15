@@ -10,6 +10,7 @@ class Cpu extends Component{
     changeVal=(event)=>{
         this.setState({value:event.target.value});
         this.props.cambio(event.target.value)
+        
     }
     changeQuantum=(event)=>{
         this.setState({quantum:event.target.value})

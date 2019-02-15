@@ -113,7 +113,7 @@ class Contenedor extends Component{
     ejecutarHandler=async ()=>{
         let listo=[...this.state.listo];
         if (this.state.schedule== "SRT") {
-            listo=this.sortByKey2(listo,'restante');
+            listo=this.sortByKey(listo,'restante');
         }if(this.state.schedule=="HRRN"){
             for(let i=0;i<listo.length;i++){
                 let proceso = {...listo[i]};
@@ -122,6 +122,8 @@ class Contenedor extends Component{
             }
             listo=this.sortByKey(listo,'hrrn').reverse();
             console.log(listo)
+        }else{
+            listo=this.sortByKey(listo,'nombre')
         }
         await this.setState({
             listo:listo
@@ -148,16 +150,32 @@ class Contenedor extends Component{
             tiempoActual: tiempoA,
             listo: listaActualizada,
         });
+        if(this.state.schedule!=="FIFO" && this.state.listo.length!=0){
+            let listo=[...this.state.listo]
+            let proceso={...listo[0]}
+            proceso.quantum-=1;
+            listo[0]=proceso
+            if(proceso.quantum===0){
+                proceso.quantum=this.state.quantum;
+                listo.reverse();
+                listo.pop();
+                listo.reverse();
+                listo.push(proceso);
+            }
+            await this.setState({
+                listo:listo
+            })
+        }
         if(tiempoA%5==0){
             this.bloqueadoAListo()
         }
-        //this.quantumManager()
     };
     bloqueadoAListo=()=>{
         let bloqueados = [...this.state.bloqueado];
         let listos =[...this.state.listo];
+        let bul=false;
         if(bloqueados.length!==0){
-            let proceso=this.state.bloqueado[0];
+            let proceso={...bloqueados[0]};
             bloqueados.reverse();
             bloqueados.pop();
             bloqueados.reverse();
@@ -166,35 +184,51 @@ class Contenedor extends Component{
                 listo:listos,
                 bloqueado:bloqueados
             })
+            bul=true;
         }
+        return bul;
     }
-    quantumManager = () => {
-        if (this.state.schedule !== "FIFO") {
-            let proceso=this.state.listo[0];
-            let listo=[...this.state.listo]
-            proceso.quantum-=1;
-            if(proceso.quantum===0){
-               listo.reverse()
-               let pop=listo.pop()
-               listo.reverse()
-               listo.push(pop)
+    BlockHandler=(valor)=>{
+        console.log(valor)
+        if (valor == "I/O") {
+            if (this.bloqueadoAListo()){
+                this.ejecutarHandler();
             }
-            this.setState({
-                listo:listo
-            })
         }
-    }
-    BlockHandler=()=>{
         if(this.state.listo.length!=0){
-            let listoQuitado=[...this.state.listo];
-            listoQuitado=listoQuitado.reverse();
-            let bloqueado=listoQuitado.pop();
-            listoQuitado=listoQuitado.reverse();
-            let arrBloqueados=[...this.state.bloqueado,bloqueado];
-            this.setState({
-                bloqueado:arrBloqueados,
-                listo:listoQuitado
-            })
+            this.ejecutarHandler();
+            if(valor=="SVC1"){
+                let listoQuitado=[...this.state.listo];
+                listoQuitado=listoQuitado.reverse();
+                let bloqueado=listoQuitado.pop();
+                listoQuitado=listoQuitado.reverse();
+                let arrBloqueados=[...this.state.bloqueado,bloqueado];
+                this.setState({
+                    bloqueado:arrBloqueados,
+                    listo:listoQuitado
+                })
+            }else if(valor=="SVC2" || valor=="Error_Porgrama"){
+                let listoQuitado = [...this.state.listo];
+                listoQuitado = listoQuitado.reverse();
+                let finalizado = listoQuitado.pop();
+                listoQuitado = listoQuitado.reverse();
+                let arrFinalizada = [...this.state.finalizada, finalizado];
+                this.setState({
+                    finalizada: arrFinalizada,
+                    listo: listoQuitado
+                })
+            }else if(valor=="SVC3"||valor=="Quantum_Expirado"){
+                let listoQuitado = [...this.state.listo];
+                let pop={...listoQuitado[0]}
+                pop.quantum=this.state.quantum;
+                listoQuitado.reverse()
+                listoQuitado.pop()
+                listoQuitado.reverse()
+                listoQuitado.push(pop)
+                this.setState({
+                   listo: listoQuitado
+                })
+            }
         }else{
             return
         } 
@@ -227,7 +261,7 @@ class Contenedor extends Component{
                     <Procesos listo={this.state.listo} corriendo={this.state.listo[0]} bloqueados={this.state.bloqueado} 
                     finalizado={this.state.finalizada} agregar={this.addProcesoHandler}
                     nombre={this.changeNameHandler} pagina={this.changePagHandler} ejecTotal={this.changeEjecTotalHandler} nombreAutomatico={this.state.numeroProcesoActual}/>
-                    <Cpu proceso={this.state.listo[0]} cambio={this.changeScheduleHandler} changeQuantum={this.changeQuantumHandler}/>
+                    <Cpu tiempo={this.state.tiempoActual} proceso={this.state.listo[0]} cambio={this.changeScheduleHandler} changeQuantum={this.changeQuantumHandler}/>
                     <Memoria/>
                 </div>
                 <h1>{this.state.arreglo}</h1>
