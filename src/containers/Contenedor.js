@@ -24,7 +24,7 @@ class Contenedor extends Component{
         },
         tiempoActual:0,
         schedule:"FIFO",
-        quantum:null,
+        quantum:5,
         arreglo:"",
         numeroProcesoActual:1,
     };
@@ -41,6 +41,31 @@ class Contenedor extends Component{
             procesoN:{...this.state.procesoN,pag: pagina}
         });
     };
+    changeQuantumHandler=(event)=>{
+        let quantum=event.target.value;
+        let listaActualizada=[]
+        for(let i=0;i<this.state.listo.length;i++){
+            let proceso=this.state.listo[i];
+            if(i===0){
+                proceso.quantum=Math.abs(this.state.quantum-quantum);
+            }
+            proceso.quantum=quantum;
+            listaActualizada.push(proceso);
+        }
+        this.setState({
+            quantum:quantum,
+            listo:listaActualizada
+        });
+    }
+    quantumManager = () => {
+        if (this.state.schedule !== "FIFO") {
+            let proceso=this.state.listo[0];
+            proceso.quantum-=1;
+            if(proceso.quantum===0){
+               console.log(this.state.listo)
+            }
+        }
+    }
     changeEjecTotalHandler=(event)=>{
         let ejecTotal = event.target.value;
         console.log("ejecTotal " + ejecTotal)
@@ -64,7 +89,9 @@ class Contenedor extends Component{
     }
     addProcesoHandler=async()=>{
         await this.llenarProcesoN()
+        console.log("llega aqui")
         await this.ejecutarHandler()
+        console.log("llega aqui2")
         let arreglo=[...this.state.listo];
         let numeroProcesoActualMasUno =this.state.numeroProcesoActual;
         await this.changeNameHandler(numeroProcesoActualMasUno);
@@ -79,6 +106,7 @@ class Contenedor extends Component{
     ejecutarHandler=()=>{
         let tiempoA=this.state.tiempoActual+1;
         let listaActualizada=[];
+        //this.quantumManager()
         for(let i =0;i<this.state.listo.length;i++){
             let proceso=this.state.listo[i];
             if(i===0){
@@ -134,6 +162,7 @@ class Contenedor extends Component{
             schedule:value
         })
     }
+    
     render(){
         return(
             <div>
@@ -143,7 +172,7 @@ class Contenedor extends Component{
                     <Procesos listo={this.state.listo} corriendo={this.state.listo[0]} bloqueados={this.state.bloqueado} 
                     finalizado={this.state.finalizada} agregar={this.addProcesoHandler}
                     nombre={this.changeNameHandler} pagina={this.changePagHandler} ejecTotal={this.changeEjecTotalHandler} nombreAutomatico={this.state.numeroProcesoActual}/>
-                    <Cpu proceso={this.state.listo[0]} cambio={this.changeScheduleHandler}/>
+                    <Cpu proceso={this.state.listo[0]} cambio={this.changeScheduleHandler} changeQuantum={this.changeQuantumHandler}/>
                     <Memoria/>
                 </div>
                 <h1>{this.state.arreglo}</h1>

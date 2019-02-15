@@ -4,13 +4,19 @@ import Bloque from './bloque/Bloque';
 
 class Cpu extends Component{
     state={
-        value:"FIFO"
+        value:"FIFO",
+        quantum:5
     };
     changeVal=(event)=>{
         this.setState({value:event.target.value});
         this.props.cambio(event.target.value)
     }
+    changeQuantum=(event)=>{
+        this.setState({quantum:event.target.value})
+        this.props.changeQuantum(event)
+    }
     render(){
+        let quantum=this.state.value=="FIFO"?<input value={5} disabled="true"></input>:<input value={this.state.quantum} onChange={this.changeQuantum}></input>
         let proceso=this.props.proceso ? this.props.proceso:"";
         let procesoEnRunning=[
             <p className="relleno">Nombre: {proceso.nombre}</p>,
@@ -18,8 +24,8 @@ class Cpu extends Component{
             <p className="relleno">CPU Asignado: {proceso.asignado}</p>,
             <p className="relleno">Envejecimiento: {proceso.envejecimiento}</p>,
             <p className="relleno">CPU Restante: {proceso.restante}</p>,
-            <p className="relleno">Quantum restante: {proceso.quantum}</p>
         ];
+        if(this.state.value!="FIFO"){procesoEnRunning.push(<p className="relleno">Quantum restante: {proceso.quantum}</p>)}
         let CPU=[
             <div className="parte1">
                 <select onChange={this.changeVal} value={this.state.value}>
@@ -31,7 +37,7 @@ class Cpu extends Component{
             </div>,
             <div className="parte2">
                 <p>Tam Quantum:</p>
-                <input></input>
+                {quantum}
             </div>
         ];
         return(

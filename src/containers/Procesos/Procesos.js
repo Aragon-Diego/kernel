@@ -8,7 +8,7 @@ const Procesos=(props)=>{
     let listo=props.listo.map((proceso,index)=>{if(index!=0){
         return(<Proceso nombre={proceso.nombre} numero={index} key={index}/>);
     }else{
-        return
+        return;
     }
     });
     let corriendo=props.corriendo?<Proceso nombre={props.corriendo.nombre} numero={0}/>:"";
