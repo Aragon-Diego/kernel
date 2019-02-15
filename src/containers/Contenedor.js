@@ -20,7 +20,7 @@ class Contenedor extends Component{
             quantum:"",
             ejecTotal: "",
             pag:"",
-            hrrn:""
+            hrrn:"",
         },
         tiempoActual:0,
         schedule:"FIFO",
@@ -30,6 +30,7 @@ class Contenedor extends Component{
     };
     changeNameHandler=(nombre1)=>{
         let nombre=nombre1;
+
         this.setState({
             procesoN:{...this.state.procesoN, nombre:nombre}
         });
@@ -37,8 +38,7 @@ class Contenedor extends Component{
     changePagHandler=(event)=>{
         let pagina = event.target.value;
         console.log(pagina)
-        this.setState({
-            procesoN:{...this.state.procesoN,pag: pagina}
+        this.setState({procesoN:{...this.state.procesoN,pag: pagina}
         });
     };
     changeQuantumHandler=(event)=>{
@@ -57,35 +57,30 @@ class Contenedor extends Component{
             listo:listaActualizada
         });
     }
-    quantumManager = () => {
-        if (this.state.schedule !== "FIFO") {
-            let proceso=this.state.listo[0];
-            proceso.quantum-=1;
-            if(proceso.quantum===0){
-               console.log(this.state.listo)
-            }
-        }
-    }
-    changeEjecTotalHandler=(event)=>{
+    changeEjecTotalHandler=async(event)=>{
         let ejecTotal = event.target.value;
         console.log("ejecTotal " + ejecTotal)
-        this.setState({
-            procesoN:{...this.state.procesoN,
-                ejecTotal: ejecTotal,
-            }
+        let procesoN={...this.state.procesoN};
+        procesoN.ejecTotal=ejecTotal;
+        await this.setState({
+            procesoN:procesoN
         });
     };
-    llenarProcesoN=()=>{
+    llenarProcesoN=async ()=>{
         let tiempoA=this.state.tiempoActual;
-        this.setState({
+        await this.setState({
              procesoN:{...this.setState.procesoN,
                 tpo: tiempoA,
                 asignado: 0,
                 envejecimiento: 0,
                 restante: this.state.procesoN.ejecTotal,
-                quantum: this.state.quantum
+                quantum: this.state.quantum,
+                hrrn:1 ,
+                ejecTotal:this.state.procesoN.ejecTotal,
+                pag:this.state.procesoN.pag
             },
         })
+        
     }
     addProcesoHandler=async()=>{
         await this.llenarProcesoN()
@@ -103,32 +98,92 @@ class Contenedor extends Component{
             numeroProcesoActual:numeroProcesoActualMasUno,
         })
     };
-    ejecutarHandler=()=>{
-        let tiempoA=this.state.tiempoActual+1;
-        let listaActualizada=[];
-        //this.quantumManager()
-        for(let i =0;i<this.state.listo.length;i++){
-            let proceso=this.state.listo[i];
-            if(i===0){
-                proceso.asignado+=1;
-                proceso.restante-=1;
-            }else{
-                proceso.envejecimiento+=1;
+    sortByKey=(array, key)=>{
+        return array.sort(function (a, b) {
+            var x = a[key]; var y = b[key];
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+        });
+    }
+    sortByKey2=(array, key)=>{
+        return array.sort(function (a, b) {
+            var x = a[key]; var y = b[key];
+        return ((x > y) ? 1 : ((x < y) ? -1 : 0));
+        });
+    }
+    ejecutarHandler=async ()=>{
+        let listo=[...this.state.listo];
+        if (this.state.schedule== "SRT") {
+            listo=this.sortByKey2(listo,'restante');
+        }if(this.state.schedule=="HRRN"){
+            for(let i=0;i<listo.length;i++){
+                let proceso = {...listo[i]};
+                proceso.hrrn = ((parseInt(proceso.envejecimiento) + parseInt(proceso.ejecTotal)) / parseInt(proceso.ejecTotal));
+                listo[i]=proceso;
             }
-            if(proceso.restante!=0){
+            listo=this.sortByKey(listo,'hrrn').reverse();
+            console.log(listo)
+        }
+        await this.setState({
+            listo:listo
+        })
+        let tiempoA = this.state.tiempoActual + 1;
+        let listaActualizada = [];
+        for (let i = 0; i < this.state.listo.length; i++) {
+            let proceso = this.state.listo[i];
+            if (i === 0) {
+                proceso.asignado += 1;
+                proceso.restante -= 1;
+            } else {
+                proceso.envejecimiento += 1;
+            }
+            if (proceso.restante != 0) {
                 listaActualizada.push(proceso);
-            }else{
-             this.setState({
-                finalizada:[...this.state.finalizada,proceso]
-             })   
+            } else {
+                this.setState({
+                    finalizada: [...this.state.finalizada, proceso]
+                })
             }
         }
-        console.log(listaActualizada);
-        this.setState({
-            tiempoActual:tiempoA,
-            listo:listaActualizada,
-        })
+        await this.setState({
+            tiempoActual: tiempoA,
+            listo: listaActualizada,
+        });
+        if(tiempoA%5==0){
+            this.bloqueadoAListo()
+        }
+        //this.quantumManager()
     };
+    bloqueadoAListo=()=>{
+        let bloqueados = [...this.state.bloqueado];
+        let listos =[...this.state.listo];
+        if(bloqueados.length!==0){
+            let proceso=this.state.bloqueado[0];
+            bloqueados.reverse();
+            bloqueados.pop();
+            bloqueados.reverse();
+            listos.push(proceso);
+            this.setState({
+                listo:listos,
+                bloqueado:bloqueados
+            })
+        }
+    }
+    quantumManager = () => {
+        if (this.state.schedule !== "FIFO") {
+            let proceso=this.state.listo[0];
+            let listo=[...this.state.listo]
+            proceso.quantum-=1;
+            if(proceso.quantum===0){
+               listo.reverse()
+               let pop=listo.pop()
+               listo.reverse()
+               listo.push(pop)
+            }
+            this.setState({
+                listo:listo
+            })
+        }
+    }
     BlockHandler=()=>{
         if(this.state.listo.length!=0){
             let listoQuitado=[...this.state.listo];
