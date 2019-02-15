@@ -24,6 +24,7 @@ class Contenedor extends Component{
         },
         tiempoActual:0,
         schedule:"FIFO",
+        pastSchedule:"",
         quantum:5,
         arreglo:"",
         numeroProcesoActual:1,
@@ -112,8 +113,10 @@ class Contenedor extends Component{
     }
     ejecutarHandler=async ()=>{
         let listo=[...this.state.listo];
-        if (this.state.schedule== "SRT") {
+        let pastSchedule=this.state.pastSchedule;
+        if (this.state.schedule == "SRT") {
             listo=this.sortByKey(listo,'restante');
+            pastSchedule="SRT";
         }if(this.state.schedule=="HRRN"){
             for(let i=0;i<listo.length;i++){
                 let proceso = {...listo[i]};
@@ -121,12 +124,14 @@ class Contenedor extends Component{
                 listo[i]=proceso;
             }
             listo=this.sortByKey(listo,'hrrn').reverse();
-            console.log(listo)
-        }else{
+            pastSchedule = "HRRN";
+        } else if ((this.state.schedule == "RR" && this.state.pastSchedule !== "RR")||(this.state.schedule == "FIFO" && this.state.pastSchedule !== "FIFO")) {
             listo=this.sortByKey(listo,'nombre')
+            pastSchedule =this.state.schedule;
         }
         await this.setState({
-            listo:listo
+            listo:listo,
+            pastSchedule:pastSchedule
         })
         let tiempoA = this.state.tiempoActual + 1;
         let listaActualizada = [];
@@ -150,26 +155,31 @@ class Contenedor extends Component{
             tiempoActual: tiempoA,
             listo: listaActualizada,
         });
+        this.quantuManager()
+        if(tiempoA%5==0){
+            this.bloqueadoAListo()
+        }
+    };
+    quantuManager=async()=>{
+        let listo=[...this.state.listo]
+        let proceso={...listo[0]};
         if(this.state.schedule!=="FIFO" && this.state.listo.length!=0){
-            let listo=[...this.state.listo]
-            let proceso={...listo[0]}
             proceso.quantum-=1;
-            listo[0]=proceso
+            listo[0]=proceso;
             if(proceso.quantum===0){
                 proceso.quantum=this.state.quantum;
                 listo.reverse();
                 listo.pop();
                 listo.reverse();
                 listo.push(proceso);
+                console.log(listo)
             }
+            console.log(listo)
             await this.setState({
                 listo:listo
             })
         }
-        if(tiempoA%5==0){
-            this.bloqueadoAListo()
-        }
-    };
+    }
     bloqueadoAListo=()=>{
         let bloqueados = [...this.state.bloqueado];
         let listos =[...this.state.listo];
@@ -251,15 +261,15 @@ class Contenedor extends Component{
             return
         } 
     }
-    printTxtHandler = async (event) => {
+    printTxtHandler = (event) => {
         let file = new FileReader();
         let arregloDeTxt;
-        file.onload = () => {
+        file.onload = async () => {
             arregloDeTxt = file.result.split('\n');
-            this.setState({
+            await this.setState({
                 arreglo: arregloDeTxt,
             });
-            console.log(this.state.arreglo)
+            this.procesarArreglo()
         };
         file.readAsText(event.target.files[0]);
     };
@@ -269,7 +279,82 @@ class Contenedor extends Component{
             schedule:value
         })
     }
-    
+    procesarArreglo=()=>{
+        console.log(this.state.arreglo)
+        let arreglo2D=this.state.arreglo.map((i)=>{return(i.split(","))});
+        console.log(arreglo2D)
+        let tiempoActual=parseInt(arreglo2D[0][1]);
+        console.log(tiempoActual);
+        let numeroProcesos=parseInt(arreglo2D[1][0]);
+        let i=0;
+        let arregloProcesos=[];
+        while(numeroProcesos!=0){
+            if(arreglo2D[i].length==3){
+                arregloProcesos.push(arreglo2D[i])
+                numeroProcesos--;
+            }
+            i++;
+            
+        }
+        console.log(arregloProcesos);
+        let listo=[];
+        let bloqueado=[]
+        let llegadaMaxima=-1;
+        for(let i=0;i<arregloProcesos.length;i++){
+            let llegada=parseInt(arregloProcesos[i][0]);
+            llegadaMaxima=llegada>llegadaMaxima?llegada:llegadaMaxima;
+            let ejecTotal=parseInt(arregloProcesos[i][1]);
+            if(parseInt(arregloProcesos[i][2])==1){
+                let proceso={
+                    nombre:llegada,
+                    tpo:ejecTotal+llegada,
+                    asignado:1,
+                    envejecimiento:0,
+                    restante:ejecTotal-llegada,
+                    quantum:"",
+                    ejecTotal:ejecTotal,
+                    pag:"",
+                    hrrn:""
+                }
+                listo.reverse()
+                listo.push(proceso)
+                listo.reverse()
+            }
+            if (parseInt(arregloProcesos[i][2]) == 2) {
+                let proceso={
+                    nombre:llegada,
+                    tpo:llegada,
+                    asignado:1,
+                    envejecimiento:0,
+                    restante:ejecTotal-1,
+                    quantum:"",
+                    ejecTotal:ejecTotal,
+                    pag:"",
+                    hrrn:""
+                }
+                bloqueado.push(proceso)
+            }else{
+                let proceso={
+                    nombre:llegada,
+                    tpo:llegada,
+                    asignado:0,
+                    envejecimiento:tiempoActual-llegada,
+                    restante:ejecTotal,
+                    quantum:"",
+                    ejecTotal:ejecTotal,
+                    pag:"",
+                    hrrn:""
+                }
+                listo.push(proceso);
+            }
+        }
+        this.setState({
+            tiempoActual:tiempoActual,
+            listo:listo,
+            bloqueado:bloqueado,
+            numeroProcesoActual:llegadaMaxima+1
+        })
+    }
     render(){
         return(
             <div>
