@@ -188,11 +188,29 @@ class Contenedor extends Component{
         }
         return bul;
     }
-    BlockHandler=(valor)=>{
+    BlockHandler=async (valor)=>{
         console.log(valor)
         if (valor == "I/O") {
-            if (this.bloqueadoAListo()){
-                this.ejecutarHandler();
+            let bloqueados = [...this.state.bloqueado];
+            let listos = [...this.state.listo];
+            let bul = false;
+            if (bloqueados.length !== 0) {
+                let proceso = {
+                    ...bloqueados[0]
+                };
+                bloqueados.reverse();
+                bloqueados.pop();
+                bloqueados.reverse();
+                listos.push(proceso);
+                console.log(listos)
+                await this.setState({
+                    listo: listos,
+                    bloqueado: bloqueados
+                })
+                bul = true;
+            }
+            if(bul){
+              this.ejecutarHandler();
             }
         }
         if(this.state.listo.length!=0){
