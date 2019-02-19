@@ -13,8 +13,13 @@ class Cpu extends Component{
         
     }
     changeQuantum=(event)=>{
-        this.setState({quantum:event.target.value})
-        this.props.changeQuantum(event)
+        let value = event.target.value;
+        if(!isNaN(value)){
+            this.setState({quantum:event.target.value})
+            this.props.changeQuantum(event)
+        }else{
+            alert("Usa solo números");
+        }
     }
     render(){
         let quantum=this.state.value=="FIFO"?<input value={5} disabled="true"></input>:<input value={this.state.quantum} onChange={this.changeQuantum}></input>

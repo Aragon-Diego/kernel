@@ -9,17 +9,25 @@ class BloqueN extends Component{
     }
     changePag=(event)=>{
         let valor=event.target.value;
-        this.setState({
-            valuePag:valor
-        })
-        this.props.pagina(event)
+        if(!isNaN(valor)){
+            this.setState({
+                valuePag:valor
+            })
+            this.props.pagina(event)
+        }else{
+            alert("usa solo números")
+        }
     }
     changeEjec=(event)=>{
         let valor=event.target.value;
-        this.setState({
-            valueEjec:valor
-        })
-        this.props.ejecTotal(event)
+        if (!isNaN(valor)) {
+            this.setState({
+                valueEjec:valor
+            })
+            this.props.ejecTotal(event)
+        }else{
+           alert("usa solo números")
+        }
     }
     clickAgregar=()=>{
         this.setState({
