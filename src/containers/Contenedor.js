@@ -112,26 +112,26 @@ class Contenedor extends Component{
         });
     }
     ejecutarHandler=async ()=>{
-        let listo=[...this.state.listo];
-        let pastSchedule=this.state.pastSchedule;
+        let listo = [...this.state.listo];
+        let pastSchedule = this.state.pastSchedule;
         if (this.state.schedule == "SRT") {
-            listo=this.sortByKey(listo,'restante');
-            pastSchedule="SRT";
-        }if(this.state.schedule=="HRRN"){
-            for(let i=0;i<listo.length;i++){
-                let proceso = {...listo[i]};
+            listo = this.sortByKey(listo, 'restante');
+            pastSchedule = "SRT";
+        } if (this.state.schedule == "HRRN") {
+            for (let i = 0; i < listo.length; i++) {
+                let proceso = { ...listo[i] };
                 proceso.hrrn = ((parseInt(proceso.envejecimiento) + parseInt(proceso.ejecTotal)) / parseInt(proceso.ejecTotal));
-                listo[i]=proceso;
+                listo[i] = proceso;
             }
-            listo=this.sortByKey(listo,'hrrn').reverse();
+            listo = this.sortByKey(listo, 'hrrn').reverse();
             pastSchedule = "HRRN";
-        } else if ((this.state.schedule == "RR" && this.state.pastSchedule !== "RR")||(this.state.schedule == "FIFO" && this.state.pastSchedule !== "FIFO")) {
-            listo=this.sortByKey(listo,'nombre')
-            pastSchedule =this.state.schedule;
+        } else if ((this.state.schedule == "RR" && this.state.pastSchedule !== "RR") || (this.state.schedule == "FIFO" && this.state.pastSchedule !== "FIFO")) {
+            listo = this.sortByKey(listo, 'nombre')
+            pastSchedule = this.state.schedule;
         }
         await this.setState({
-            listo:listo,
-            pastSchedule:pastSchedule
+            listo: listo,
+            pastSchedule: pastSchedule
         })
         let tiempoA = this.state.tiempoActual + 1;
         let listaActualizada = [];
@@ -155,10 +155,10 @@ class Contenedor extends Component{
             tiempoActual: tiempoA,
             listo: listaActualizada,
         });
-        this.quantuManager()
         if(tiempoA%5==0){
             this.bloqueadoAListo()
         }
+        this.quantuManager()
     };
     quantuManager=async()=>{
         let listo=[...this.state.listo]
@@ -173,12 +173,14 @@ class Contenedor extends Component{
                 listo.reverse();
                 listo.push(proceso);
                 console.log(listo)
+
             }
             console.log(listo)
             await this.setState({
                 listo:listo
             })
         }
+        
     }
     bloqueadoAListo=()=>{
         let bloqueados = [...this.state.bloqueado];
@@ -189,7 +191,14 @@ class Contenedor extends Component{
             bloqueados.reverse();
             bloqueados.pop();
             bloqueados.reverse();
+            listos.reverse();
+            let pop=listos.pop();
+            pop.quantum=this.state.quantum;
+            proceso.quantum=this.state.quantum;
+            listos.reverse();
+            listos[0].quantum=this.state.quantum;
             listos.push(proceso);
+            listos.push(pop);
             this.setState({
                 listo:listos,
                 bloqueado:bloqueados
@@ -211,7 +220,14 @@ class Contenedor extends Component{
                 bloqueados.reverse();
                 bloqueados.pop();
                 bloqueados.reverse();
+                listos.reverse();
+                let pop = listos.pop();
+                pop.quantum=this.state.quantum;
+                proceso.quantum=this.state.quantum;
+                listos.reverse();
+                listos[0].quantum=this.state.quantum;
                 listos.push(proceso);
+                listos.push(pop);
                 console.log(listos)
                 await this.setState({
                     listo: listos,
@@ -307,10 +323,10 @@ class Contenedor extends Component{
             if(parseInt(arregloProcesos[i][2])==1){
                 let proceso={
                     nombre:llegada,
-                    tpo:ejecTotal+llegada,
-                    asignado:1,
+                    tpo:llegada,
+                    asignado:0,
                     envejecimiento:0,
-                    restante:ejecTotal-llegada,
+                    restante:ejecTotal,
                     quantum:"",
                     ejecTotal:ejecTotal,
                     pag:"",
@@ -319,26 +335,26 @@ class Contenedor extends Component{
                 listo.reverse()
                 listo.push(proceso)
                 listo.reverse()
-            }
-            if (parseInt(arregloProcesos[i][2]) == 2) {
+                console.log("entra a crear")
+            }else if (parseInt(arregloProcesos[i][2]) == 2) {
                 let proceso={
                     nombre:llegada,
                     tpo:llegada,
-                    asignado:1,
+                    asignado:0,
                     envejecimiento:0,
-                    restante:ejecTotal-1,
-                    quantum:"",
+                    restante:ejecTotal,
+                    quantum:this.state.quantum,
                     ejecTotal:ejecTotal,
                     pag:"",
                     hrrn:""
                 }
                 bloqueado.push(proceso)
-            }else{
+            }else if(parseInt(arregloProcesos[i][2]) == 3){
                 let proceso={
                     nombre:llegada,
                     tpo:llegada,
                     asignado:0,
-                    envejecimiento:tiempoActual-llegada,
+                    envejecimiento:0,
                     restante:ejecTotal,
                     quantum:"",
                     ejecTotal:ejecTotal,
@@ -367,7 +383,7 @@ class Contenedor extends Component{
                     <Cpu tiempo={this.state.tiempoActual} proceso={this.state.listo[0]} cambio={this.changeScheduleHandler} changeQuantum={this.changeQuantumHandler}/>
                     <Memoria/>
                 </div>
-                <h1>{this.state.arreglo}</h1>
+                
                 <input type="file" onChange={this.printTxtHandler}></input>
             </div> 
         );
