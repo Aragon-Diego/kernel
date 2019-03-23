@@ -15,7 +15,7 @@ class Interrupciones extends Component{
         return(
             <div className="Conten">
             <Contador tiempo={this.props.tiempo}/>
-            <button onClick={this.props.ejecutar}>Ejecutar página</button>
+            <button onClick={this.props.ejecutar}>Ejec</button>
             <p className="inter1">Interrupcion: </p>
             <select className="select2" onChange={this.changeVal} value={this.state.valor}>
                 <option value="SVC1">SVC de solicitud de I/O</option>
@@ -25,7 +25,7 @@ class Interrupciones extends Component{
                 <option value="Quantum_Expirado">Externa de quantum expirado</option>
                 <option value="I/O">Dispositivo I/O</option>
             </select>
-            <button onClick={(valor)=>this.props.btnBloqueo(this.state.valor)}>Ejecutar</button>
+            <button onClick={(valor)=>this.props.btnBloqueo(this.state.valor)}>Ejec</button>
         </div>
         );
     }

@@ -24,3 +24,56 @@
     float: left;
     height:100%;
 }
+.tit{
+    float: left;
+    padding-right:0px;
+    padding-left:15px;
+}
+.filaContMemoria{
+    width:100%;
+    background-color:orange;
+    border-bottom: 1px solid black;
+    text-align: center;
+    height:25px;
+}
+.filaContMemoria p{
+    padding-top:3px;
+    float: left;
+}
+.filaContMemoria p:nth-child(1){
+    padding-left:18px;
+}
+.filaContMemoria p:nth-child(2){
+    padding-left:14px;
+}
+.filaContMemoria p:nth-child(3){
+    padding-left:26px;
+}
+.filaContMemoria p:nth-child(4){
+    padding-left:49px;
+}
+.filaContMemoria p:nth-child(5){
+    padding-left:39px;
+}
+.filaContMemoria p:nth-child(6){
+    padding-left:28px;
+}
+.Bloque .scroll{
+    overflow: scroll;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.Bloque .scroll::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+}
+.devMemoria select,
+.devMemoria button{
+    padding-right: 125px;
+    margin:5px;
+    margin-top:30px;
+}
+.devMemoria button{
+    padding:0;
+    margin-left:40px;
+}
