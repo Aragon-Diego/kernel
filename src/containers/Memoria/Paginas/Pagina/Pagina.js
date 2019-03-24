@@ -1,14 +1,14 @@
 import React from 'react';
 
-const Pagina=()=>{
+const Pagina=(props)=>{
     return(
         <div className="filaContMemoria">
-            <p>00</p>
-            <p>00</p>
-            <p>00</p>
-            <p>00</p>
-            <p>00</p>
-            <p>00</p>
+            <p>{props.pag}</p>
+            <p>{props.r}</p>
+            <p>{props.llegada}</p>
+            <p>{props.ultAccs}</p>
+            <p>{props.accs}</p>
+            <p>{props.nur}</p>
         </div>
     );
 }

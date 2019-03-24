@@ -21,6 +21,7 @@ class Contenedor extends Component{
             ejecTotal: "",
             pag:"",
             hrrn:"",
+            paginas:[]
         },
         tiempoActual:0,
         schedule:"FIFO",
@@ -70,7 +71,7 @@ class Contenedor extends Component{
     llenarProcesoN=async ()=>{
         let tiempoA=this.state.tiempoActual;
         await this.setState({
-             procesoN:{...this.setState.procesoN,
+             procesoN:{...this.state.procesoN,
                 tpo: tiempoA,
                 asignado: 0,
                 envejecimiento: 0,
@@ -83,9 +84,35 @@ class Contenedor extends Component{
         })
         
     }
+    llenarPaginas=async()=>{
+        let num=this.state.procesoN.pag;
+        let paginas=[];
+        for(let i=0;i<num;i++){
+            let numero=i;
+            if(i <10){
+                numero="0"+i
+            }
+            let pagina={
+                pag:numero,
+                r:"00",
+                llegada:"00",
+                ultAccs:"00",
+                accs:"00",
+                nur:"00"
+            };
+            paginas.push(pagina)
+        }
+        await this.setState({
+            procesoN:{
+                ...this.state.procesoN,
+                paginas:paginas
+            }
+        })
+    }
     addProcesoHandler=async()=>{
         await this.llenarProcesoN()
         console.log("llega aqui")
+        this.llenarPaginas()
         await this.ejecutarHandler()
         console.log("llega aqui2")
         let arreglo=[...this.state.listo];
@@ -372,6 +399,10 @@ class Contenedor extends Component{
         })
     }
     render(){
+        let paginas=null;
+        if (this.state.listo.length!==0){
+            paginas=this.state.listo[0].paginas;
+        }
         return(
             <div>
                 <div className="Contenedor">
@@ -381,7 +412,7 @@ class Contenedor extends Component{
                     finalizado={this.state.finalizada} agregar={this.addProcesoHandler}
                     nombre={this.changeNameHandler} pagina={this.changePagHandler} ejecTotal={this.changeEjecTotalHandler} nombreAutomatico={this.state.numeroProcesoActual}/>
                     <Cpu tiempo={this.state.tiempoActual} proceso={this.state.listo[0]} cambio={this.changeScheduleHandler} changeQuantum={this.changeQuantumHandler}/>
-                    <Memoria/>
+                    <Memoria contenido={paginas}/>
                 </div>
                 
                 <input type="file" onChange={this.printTxtHandler}></input>
