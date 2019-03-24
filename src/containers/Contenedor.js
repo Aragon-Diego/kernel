@@ -264,13 +264,13 @@ class Contenedor extends Component{
                     pop.quantum=this.state.quantum;
                     proceso.quantum=this.state.quantum;
                     listos.reverse();
-                    listos[0].quantum=this.state.quantum;
                     listos.push(proceso);
                     listos.push(pop);
                     console.log(listos);
                 }else{
                     listos.push(proceso);
                 }
+                this.reiniciarQuantum(listos);
                 await this.setState({
                     listo: listos,
                     bloqueado: bloqueados
