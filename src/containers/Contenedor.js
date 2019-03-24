@@ -94,7 +94,8 @@ class Contenedor extends Component{
                 llegada:"0",
                 ultAccs:"0",
                 accs:"0",
-                nur:"00"
+                lectura:"0",
+                escritura:"0"
             };
             paginas.push(pagina)
         }
@@ -362,7 +363,8 @@ class Contenedor extends Component{
                         llegada:String(pagina[1].trim()),
                         ultAccs:String(pagina[2].trim()),
                         accs:String(pagina[3].trim()),
-                        nur:String(pagina[4].trim())+String(pagina[5].trim())
+                        lectura:String(pagina[4].trim()),
+                        escritura:String(pagina[5].trim())
                     }
                     objetoProcesos.paginas.push(objPagina);
                 }

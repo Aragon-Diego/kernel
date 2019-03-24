@@ -12,7 +12,8 @@ const Pagina=(props)=>{
     return(
         <div className="filaContMemoria">
             {arregloMemoria}
-            <p>{props.nur}</p> 
+            <p>{String(props.lectura)+String(props.escritura)}</p>
+
         </div>
     );
 }

@@ -6,7 +6,8 @@ const Paginas =(props)=>{
         llegada={pagina.llegada}
         ultAccs={pagina.ultAccs}
         accs={pagina.accs}
-        nur={pagina.nur}
+        lectura={pagina.lectura}
+        escritura={pagina.escritura}
         r={pagina.r} key={key}/>);})
     return(
         <div className="contenidoMemoria">
