@@ -210,6 +210,11 @@ class Contenedor extends Component{
         }
         
     }
+    reiniciarQuantum=(lista)=>{
+        for(let i=0;i<lista.length;i++){
+            lista[i].quantum=this.state.quantum;
+        }
+    }
     bloqueadoAListo=()=>{
         let bloqueados = [...this.state.bloqueado];
         let listos =[...this.state.listo];
@@ -225,12 +230,13 @@ class Contenedor extends Component{
                 pop.quantum=this.state.quantum;
                 proceso.quantum=this.state.quantum;
                 listos.reverse();
-                listos[0].quantum=this.state.quantum;
+                console.log("REE");
                 listos.push(proceso);
                 listos.push(pop);
             }else{
                 listos.push(proceso);
             }
+            this.reiniciarQuantum(listos);
             this.setState({
                 listo:listos,
                 bloqueado:bloqueados
@@ -416,7 +422,7 @@ class Contenedor extends Component{
             <div>
                 <div className="Contenedor">
                     <header>My little SO</header>
-                    <Inter tiempo={this.state.tiempoActual} ejecutar={this.ejecutarHandler} btnBloqueo={this.BlockHandler}/>
+                    <Inter ejecPaginas={paginas} tiempo={this.state.tiempoActual} ejecutar={this.ejecutarHandler} btnBloqueo={this.BlockHandler}/>
                     <Procesos listo={this.state.listo} corriendo={this.state.listo[0]} bloqueados={this.state.bloqueado} 
                     finalizado={this.state.finalizada} agregar={this.addProcesoHandler}
                     nombre={this.changeNameHandler} pagina={this.changePagHandler} ejecTotal={this.changeEjecTotalHandler} nombreAutomatico={this.state.numeroProcesoActual}/>

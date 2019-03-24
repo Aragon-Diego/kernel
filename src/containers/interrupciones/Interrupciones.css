@@ -19,4 +19,10 @@
 .Conten button{
     float: left;
     margin-top:10px;
+    padding-bottom:2px;
+}
+.Conten .paginas{
+    float: left;
+    margin-top:10px;
+
 }
