@@ -18,8 +18,17 @@ const Procesos = (props) => {
                 <Bloque titulo="Memoria" contenido={<div className="devMemoria">
                     <select>
                         <option>
-                            NUR
+                            FIFO
                         </option>
+                        <option>
+                            LRU
+                        </option>
+                        <option>
+                            LFU
+                        </option>
+                        <option>
+                            NUR
+                        </option>   
                     </select>
                     <button>Reset a bit NUR</button></div>}
                 />

@@ -112,7 +112,7 @@ class Contenedor extends Component{
     addProcesoHandler=async()=>{
         await this.llenarProcesoN()
         console.log("llega aqui")
-        this.llenarPaginas()
+        await this.llenarPaginas()
         await this.ejecutarHandler()
         console.log("llega aqui2")
         let arreglo=[...this.state.listo];
@@ -183,6 +183,7 @@ class Contenedor extends Component{
             listo: listaActualizada,
         });
         if(tiempoA%5==0){
+            console.log("si llega a 5%==0")
             this.bloqueadoAListo()
         }
         this.quantuManager()
@@ -218,14 +219,18 @@ class Contenedor extends Component{
             bloqueados.reverse();
             bloqueados.pop();
             bloqueados.reverse();
-            listos.reverse();
-            let pop=listos.pop();
-            pop.quantum=this.state.quantum;
-            proceso.quantum=this.state.quantum;
-            listos.reverse();
-            listos[0].quantum=this.state.quantum;
-            listos.push(proceso);
-            listos.push(pop);
+            if(listos.length!==0){
+                listos.reverse();
+                let pop=listos.pop();
+                pop.quantum=this.state.quantum;
+                proceso.quantum=this.state.quantum;
+                listos.reverse();
+                listos[0].quantum=this.state.quantum;
+                listos.push(proceso);
+                listos.push(pop);
+            }else{
+                listos.push(proceso);
+            }
             this.setState({
                 listo:listos,
                 bloqueado:bloqueados
@@ -247,15 +252,19 @@ class Contenedor extends Component{
                 bloqueados.reverse();
                 bloqueados.pop();
                 bloqueados.reverse();
-                listos.reverse();
-                let pop = listos.pop();
-                pop.quantum=this.state.quantum;
-                proceso.quantum=this.state.quantum;
-                listos.reverse();
-                listos[0].quantum=this.state.quantum;
-                listos.push(proceso);
-                listos.push(pop);
-                console.log(listos)
+                if(listos.length!==0){
+                    listos.reverse();
+                    let pop = listos.pop();
+                    pop.quantum=this.state.quantum;
+                    proceso.quantum=this.state.quantum;
+                    listos.reverse();
+                    listos[0].quantum=this.state.quantum;
+                    listos.push(proceso);
+                    listos.push(pop);
+                    console.log(listos);
+                }else{
+                    listos.push(proceso);
+                }
                 await this.setState({
                     listo: listos,
                     bloqueado: bloqueados
