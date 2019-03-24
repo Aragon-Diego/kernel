@@ -88,16 +88,12 @@ class Contenedor extends Component{
         let num=this.state.procesoN.pag;
         let paginas=[];
         for(let i=0;i<num;i++){
-            let numero=i;
-            if(i <10){
-                numero="0"+i
-            }
             let pagina={
-                pag:numero,
-                r:"00",
-                llegada:"00",
-                ultAccs:"00",
-                accs:"00",
+                pag:i,
+                r:"0",
+                llegada:"0",
+                ultAccs:"0",
+                accs:"0",
                 nur:"00"
             };
             paginas.push(pagina)
@@ -340,29 +336,52 @@ class Contenedor extends Component{
     procesarArreglo=()=>{
         console.log(this.state.arreglo)
         let arreglo2D=this.state.arreglo.map((i)=>{return(i.split(","))});
-        console.log(arreglo2D)
+        console.log("reee");
+        console.log(arreglo2D);
         let tiempoActual=parseInt(arreglo2D[0][1]);
         console.log(tiempoActual);
         let numeroProcesos=parseInt(arreglo2D[1][0]);
         let i=0;
         let arregloProcesos=[];
         while(numeroProcesos!=0){
+            let objetoProcesos={
+                datos:"",
+                paginas:[]
+            };
             if(arreglo2D[i].length==3){
-                arregloProcesos.push(arreglo2D[i])
+                objetoProcesos.datos=arreglo2D[i]
+                let numPaginas=arreglo2D[i+1][0];
+                console.warn(numPaginas)
+                for(let j=0;j<numPaginas;j++){
+                    let pagina=arreglo2D[i+2+j]
+                    //console.log("pagina:")
+                    //console.log(pagina);
+                    let objPagina={
+                        pag:j,
+                        r:String(pagina[0].trim()),
+                        llegada:String(pagina[1].trim()),
+                        ultAccs:String(pagina[2].trim()),
+                        accs:String(pagina[3].trim()),
+                        nur:String(pagina[4].trim())+String(pagina[5].trim())
+                    }
+                    objetoProcesos.paginas.push(objPagina);
+                }
+                console.log("objeto de proceso");
+                console.log(objetoProcesos);
+                arregloProcesos.push(objetoProcesos);
                 numeroProcesos--;
             }
             i++;
-            
         }
         console.log(arregloProcesos);
         let listo=[];
         let bloqueado=[]
         let llegadaMaxima=-1;
         for(let i=0;i<arregloProcesos.length;i++){
-            let llegada=parseInt(arregloProcesos[i][0]);
+            let llegada=parseInt(arregloProcesos[i].datos[0]);
             llegadaMaxima=llegada>llegadaMaxima?llegada:llegadaMaxima;
-            let ejecTotal=parseInt(arregloProcesos[i][1]);
-            if(parseInt(arregloProcesos[i][2])==1){
+            let ejecTotal=parseInt(arregloProcesos[i].datos[1]);
+            if(parseInt(arregloProcesos[i].datos[2])==1){
                 let proceso={
                     nombre:llegada,
                     tpo:llegada,
@@ -372,13 +391,15 @@ class Contenedor extends Component{
                     quantum:"",
                     ejecTotal:ejecTotal,
                     pag:"",
-                    hrrn:""
+                    hrrn:"",
+                    paginas:arregloProcesos[i].paginas
                 }
+
                 listo.reverse()
                 listo.push(proceso)
                 listo.reverse()
                 console.log("entra a crear")
-            }else if (parseInt(arregloProcesos[i][2]) == 2) {
+            }else if (parseInt(arregloProcesos[i].datos[2]) == 2) {
                 let proceso={
                     nombre:llegada,
                     tpo:llegada,
@@ -388,10 +409,11 @@ class Contenedor extends Component{
                     quantum:this.state.quantum,
                     ejecTotal:ejecTotal,
                     pag:"",
-                    hrrn:""
+                    hrrn:"",
+                    paginas:arregloProcesos[i].paginas
                 }
                 bloqueado.push(proceso)
-            }else if(parseInt(arregloProcesos[i][2]) == 3){
+            }else if(parseInt(arregloProcesos[i].datos[2]) == 3){
                 let proceso={
                     nombre:llegada,
                     tpo:llegada,
@@ -401,8 +423,10 @@ class Contenedor extends Component{
                     quantum:"",
                     ejecTotal:ejecTotal,
                     pag:"",
-                    hrrn:""
+                    hrrn:"",
+                    paginas:arregloProcesos[i].paginas
                 }
+                
                 listo.push(proceso);
             }
         }
@@ -412,6 +436,9 @@ class Contenedor extends Component{
             bloqueado:bloqueado,
             numeroProcesoActual:llegadaMaxima+1
         })
+    }
+    meterPaginasATxt=()=>{
+
     }
     render(){
         let paginas=null;

@@ -26,8 +26,7 @@
 }
 .tit{
     float: left;
-    padding-right:0px;
-    padding-left:15px;
+    padding-left:24px;
 }
 .filaContMemoria{
     width:100%;
@@ -41,22 +40,22 @@
     float: left;
 }
 .filaContMemoria p:nth-child(1){
-    padding-left:18px;
+    padding-left:28px;
 }
 .filaContMemoria p:nth-child(2){
-    padding-left:14px;
+    padding-left:22px;
 }
 .filaContMemoria p:nth-child(3){
-    padding-left:26px;
+    padding-left:35px;
 }
 .filaContMemoria p:nth-child(4){
-    padding-left:49px;
+    padding-left:57px;
 }
 .filaContMemoria p:nth-child(5){
-    padding-left:39px;
+    padding-left:49px;
 }
 .filaContMemoria p:nth-child(6){
-    padding-left:28px;
+    padding-left:36px;
 }
 .Bloque .scroll{
     overflow: scroll;
