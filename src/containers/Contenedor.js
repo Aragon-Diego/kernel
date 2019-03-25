@@ -29,6 +29,7 @@ class Contenedor extends Component{
         quantum:5,
         arreglo:"",
         numeroProcesoActual:1,
+        algoritmoMemoria:"FIFO"
     };
     changeNameHandler=(nombre1)=>{
         let nombre=nombre1;
@@ -95,7 +96,8 @@ class Contenedor extends Component{
                 ultAccs:"0",
                 accs:"0",
                 lectura:"0",
-                escritura:"0"
+                escritura:"0",
+                contador:0
             };
             paginas.push(pagina)
         }
@@ -134,6 +136,28 @@ class Contenedor extends Component{
             var x = a[key]; var y = b[key];
         return ((x > y) ? 1 : ((x < y) ? -1 : 0));
         });
+    }
+    ejecutarPaginaHandler=async(numero)=>{
+        console.log(numero)
+        let proceso=this.state.listo[0];
+        let paginas=proceso.paginas;
+        paginas[numero].ultAccs=this.state.tiempoActual;
+        paginas[numero].accs=String(1+parseInt(paginas[numero].accs));
+        paginas[numero].lectura="1";
+        paginas[numero].contador+=1;
+        if(paginas[numero].contador>=5){
+            paginas[numero].escritura="1";
+        }
+        this.state.listo.reverse()
+        this.state.listo.pop()
+        this.state.listo.reverse()
+        await this.setState({
+            listo:[proceso,
+                ...this.state.listo,
+            ]
+        })
+        this.ejecutarHandler()
+        return true;
     }
     ejecutarHandler=async ()=>{
         let listo = [...this.state.listo];
@@ -364,7 +388,8 @@ class Contenedor extends Component{
                         ultAccs:String(pagina[2].trim()),
                         accs:String(pagina[3].trim()),
                         lectura:String(pagina[4].trim()),
-                        escritura:String(pagina[5].trim())
+                        escritura:String(pagina[5].trim()),
+                        contador:0
                     }
                     objetoProcesos.paginas.push(objPagina);
                 }
@@ -443,8 +468,9 @@ class Contenedor extends Component{
         let proceso=this.state.listo[0];
         let paginas=proceso.paginas;
         for(let i=0;i<paginas.length;i++){
-            paginas[i].escritura="0"
-            paginas[i].lectura="0"
+            paginas[i].escritura="0";
+            paginas[i].lectura="0";
+            paginas[i].contador=0;
         }
         this.state.listo.reverse()
         this.state.listo.pop()
@@ -466,7 +492,7 @@ class Contenedor extends Component{
             <div>
                 <div className="Contenedor">
                     <header>My little SO</header>
-                    <Inter ejecPaginas={paginas} tiempo={this.state.tiempoActual} ejecutar={this.ejecutarHandler} btnBloqueo={this.BlockHandler}/>
+                    <Inter ejecPaginas={paginas} tiempo={this.state.tiempoActual} ejecutar={this.ejecutarPaginaHandler} btnBloqueo={this.BlockHandler}/>
                     <Procesos listo={this.state.listo} corriendo={this.state.listo[0]} bloqueados={this.state.bloqueado} 
                     finalizado={this.state.finalizada} agregar={this.addProcesoHandler}
                     nombre={this.changeNameHandler} pagina={this.changePagHandler} ejecTotal={this.changeEjecTotalHandler} nombreAutomatico={this.state.numeroProcesoActual}/>
