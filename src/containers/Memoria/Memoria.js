@@ -30,7 +30,7 @@ const Procesos = (props) => {
                             NUR
                         </option>   
                     </select>
-                    <button>Reset a bit NUR</button></div>}
+                    <button onClick={props.click}>Reset a bit NUR</button></div>}
                 />
             </div>
         </div>

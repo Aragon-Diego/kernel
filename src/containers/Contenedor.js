@@ -439,8 +439,23 @@ class Contenedor extends Component{
             numeroProcesoActual:llegadaMaxima+1
         })
     }
-    meterPaginasATxt=()=>{
-
+    resetBitNur=()=>{
+        let proceso=this.state.listo[0];
+        let paginas=proceso.paginas;
+        for(let i=0;i<paginas.length;i++){
+            paginas[i].escritura="0"
+            paginas[i].lectura="0"
+        }
+        this.state.listo.reverse()
+        this.state.listo.pop()
+        this.state.listo.reverse()
+        this.setState({
+            listo:[proceso,
+                ...this.state.listo,
+            ]
+        })
+        console.log("Si le pica")
+        return true;
     }
     render(){
         let paginas=null;
@@ -456,7 +471,7 @@ class Contenedor extends Component{
                     finalizado={this.state.finalizada} agregar={this.addProcesoHandler}
                     nombre={this.changeNameHandler} pagina={this.changePagHandler} ejecTotal={this.changeEjecTotalHandler} nombreAutomatico={this.state.numeroProcesoActual}/>
                     <Cpu tiempo={this.state.tiempoActual} proceso={this.state.listo[0]} cambio={this.changeScheduleHandler} changeQuantum={this.changeQuantumHandler}/>
-                    <Memoria contenido={paginas}/>
+                    <Memoria contenido={paginas} click={this.resetBitNur}/>
                 </div>
                 
                 <input type="file" onChange={this.printTxtHandler}></input>
