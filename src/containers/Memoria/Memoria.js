@@ -16,17 +16,17 @@ const Procesos = (props) => {
             <div className="bloques">
                 <Bloque titulo="Tabla" contenido={<Paginas pags={paginas}/>}/>
                 <Bloque titulo="Memoria" contenido={<div className="devMemoria">
-                    <select>
-                        <option>
+                    <select onChange={props.cambio}>
+                        <option value="FIFO">
                             FIFO
                         </option>
-                        <option>
+                        <option value="LRU">
                             LRU
                         </option>
-                        <option>
+                        <option value="LFU">
                             LFU
                         </option>
-                        <option>
+                        <option value="NUR">
                             NUR
                         </option>   
                     </select>

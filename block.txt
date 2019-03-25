@@ -1,0 +1,13 @@
+Fifo 
+ -->quita el más pequeño de llegada
+LRU
+ -->Quita el más pequeño de UltAccs
+LFU
+ -->Quita el más pequeño de Accs
+NUR
+ -->Quita al menor segun:
+
+    --> 00
+    --> 10
+    --> 01
+    --> 11

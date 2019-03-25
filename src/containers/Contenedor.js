@@ -29,7 +29,8 @@ class Contenedor extends Component{
         quantum:5,
         arreglo:"",
         numeroProcesoActual:1,
-        algoritmoMemoria:"FIFO"
+        algoritmoMemoria:"FIFO",
+        limiteDePaginas:5
     };
     changeNameHandler=(nombre1)=>{
         let nombre=nombre1;
@@ -141,23 +142,146 @@ class Contenedor extends Component{
         console.log(numero)
         let proceso=this.state.listo[0];
         let paginas=proceso.paginas;
-        paginas[numero].ultAccs=this.state.tiempoActual;
-        paginas[numero].accs=String(1+parseInt(paginas[numero].accs));
-        paginas[numero].lectura="1";
-        paginas[numero].contador+=1;
-        if(paginas[numero].contador>=5){
-            paginas[numero].escritura="1";
-        }
-        this.state.listo.reverse()
-        this.state.listo.pop()
-        this.state.listo.reverse()
-        await this.setState({
-            listo:[proceso,
-                ...this.state.listo,
-            ]
-        })
-        this.ejecutarHandler()
+        if(paginas[numero].r==1){
+            paginas[numero].ultAccs=this.state.tiempoActual;
+            paginas[numero].accs=String(1+parseInt(paginas[numero].accs));
+            paginas[numero].lectura="1";
+            paginas[numero].contador+=1;
+            if(paginas[numero].contador>=5){
+                paginas[numero].escritura="1";
+            }
+            this.state.listo.reverse()
+            this.state.listo.pop()
+            this.state.listo.reverse()
+            await this.setState({
+                listo:[proceso,
+                    ...this.state.listo,
+                ]
+            })
+            this.ejecutarHandler()
+        }else{
+            let count=0;
+            for(let j=0;j<paginas.length;j++){
+                if(paginas[j].r==1){
+                    count++;
+                }
+            }
+            if(count<this.state.limiteDePaginas){
+                paginas[numero].ultAccs=this.state.tiempoActual;
+                paginas[numero].llegada=this.state.tiempoActual;
+                paginas[numero].accs=String(1+parseInt(paginas[numero].accs));
+                paginas[numero].lectura="1";
+                paginas[numero].contador+=1;
+                paginas[numero].r=1;
+                if(paginas[numero].contador>=5){
+                    paginas[numero].escritura="1";
+                }
+                this.state.listo.reverse()
+                this.state.listo.pop()
+                this.state.listo.reverse()
+                await this.setState({
+                    listo:[proceso,
+                        ...this.state.listo,
+                    ]
+                })
+                this.ejecutarHandler() 
+            }else{
+                let paginasCargadas=[];
+                for(let j=0;j<paginas.length;j++){
+                    if(paginas[j].r==1){
+                        paginasCargadas.push(paginas[j]);
+                    }
+                }
+                if(this.state.algoritmoMemoria==="FIFO"){
+                    this.memoriaFifo(paginasCargadas,paginas[numero]);
+                    this.ejecutarHandler()  
+                }else if(this.state.algoritmoMemoria==="LRU"){
+                    this.memoriaLru(paginasCargadas,paginas[numero]);
+                    this.ejecutarHandler()
+                }else if(this.state.algoritmoMemoria==="LFU"){
+                    this.memoriaLfu(paginasCargadas,paginas[numero]);
+                    this.ejecutarHandler()
+                }else if(this.state.algoritmoMemoria==="NUR"){
+                    this.memoriaNur(paginasCargadas,paginas[numero]);
+                }
+            }
+        }  
         return true;
+    }
+    changeAlgoritmoMemoriaHandler=(event)=>{
+        let valor=event.target.value
+        console.log(valor)
+        this.setState({
+            algoritmoMemoria:valor
+        })
+    }
+    memoriaFifo=(arreglo,pagina)=>{
+        arreglo=arreglo.map(pagina=>{return({...pagina,llegada:parseInt(pagina.llegada)})})
+        arreglo=this.sortByKey(arreglo,"llegada");
+        console.log(arreglo);
+        this.cambioDePagina(pagina,arreglo[0])
+    }
+    memoriaLru=(arreglo,pagina)=>{
+        arreglo=arreglo.map(pagina=>{return({...pagina,ultAccs:parseInt(pagina.ultAccs,10)})})
+        arreglo=this.sortByKey(arreglo,"ultAccs");
+        console.log(arreglo);
+        this.cambioDePagina(pagina,arreglo[0])
+    }
+    memoriaLfu=(arreglo,pagina)=>{
+        arreglo=arreglo.map(pagina=>{return({...pagina,accs:parseInt(pagina.accs,10)})})
+        arreglo=this.sortByKey(arreglo,"accs");
+        console.log(arreglo);
+        let arregloRepetidos=[arreglo[0]]
+        for(let i=1;i<arreglo.length;i++){
+            if(arreglo[0].accs===arreglo[i].accs){
+                arregloRepetidos.push(arreglo[i])
+            }else{
+                break;
+            }
+        }
+        if(arregloRepetidos.length!==1)
+            this.memoriaFifo(arregloRepetidos,pagina)
+        else
+            this.cambioDePagina(pagina,arreglo[0])
+    }
+    memoriaNur=(arreglo,pagina)=>{
+        arreglo=arreglo.map(pagina=>{return({...pagina,valorNUR:parseInt(pagina.lectura,10)*10+parseInt(pagina.escritura,10)*100})})
+        arreglo=this.sortByKey(arreglo,"valorNUR");
+        console.log(arreglo);
+        let arregloRepetidos=[arreglo[0]]
+        for(let i=1;i<arreglo.length;i++){
+            if(arreglo[0].valorNUR===arreglo[i].valorNUR){
+                arregloRepetidos.push(arreglo[i])
+            }else{
+                break;
+            }
+        }
+        if(arregloRepetidos.length!==1)
+            this.memoriaFifo(arregloRepetidos,pagina)
+        else
+            this.cambioDePagina(pagina,arreglo[0])
+    }
+    cambioDePagina=async (paginaNueva,paginaVieja)=>{
+            console.log("Si llega aqui")
+            let proceso=this.state.listo[0];
+            let numero=paginaNueva.pag;
+            let numero2=paginaVieja.pag;
+            let paginas=proceso.paginas;
+            paginas[numero].ultAccs=this.state.tiempoActual;
+            paginas[numero].llegada=this.state.tiempoActual;
+            paginas[numero].accs=String(1+parseInt(paginas[numero].accs));
+            paginas[numero].lectura="1";
+            paginas[numero].contador+=1;
+            paginas[numero].r=1;
+            if(paginas[numero].contador>=5){
+                paginas[numero].escritura="1";
+            }
+            paginas[numero2].r=0;
+            let listo=[...this.state.listo]
+            console.log(listo[0].paginas[numero])
+            await this.setState({
+                listo:listo
+            })
     }
     ejecutarHandler=async ()=>{
         let listo = [...this.state.listo];
@@ -364,6 +488,7 @@ class Contenedor extends Component{
         console.log("reee");
         console.log(arreglo2D);
         let tiempoActual=parseInt(arreglo2D[0][1]);
+        let maxPaginas=parseInt(arreglo2D[0][0]);
         console.log(tiempoActual);
         let numeroProcesos=parseInt(arreglo2D[1][0]);
         let i=0;
@@ -461,7 +586,8 @@ class Contenedor extends Component{
             tiempoActual:tiempoActual,
             listo:listo,
             bloqueado:bloqueado,
-            numeroProcesoActual:llegadaMaxima+1
+            numeroProcesoActual:llegadaMaxima+1,
+            limiteDePaginas:maxPaginas
         })
     }
     resetBitNur=()=>{
@@ -497,7 +623,7 @@ class Contenedor extends Component{
                     finalizado={this.state.finalizada} agregar={this.addProcesoHandler}
                     nombre={this.changeNameHandler} pagina={this.changePagHandler} ejecTotal={this.changeEjecTotalHandler} nombreAutomatico={this.state.numeroProcesoActual}/>
                     <Cpu tiempo={this.state.tiempoActual} proceso={this.state.listo[0]} cambio={this.changeScheduleHandler} changeQuantum={this.changeQuantumHandler}/>
-                    <Memoria contenido={paginas} click={this.resetBitNur}/>
+                    <Memoria contenido={paginas} click={this.resetBitNur} cambio={this.changeAlgoritmoMemoriaHandler}/>
                 </div>
                 
                 <input type="file" onChange={this.printTxtHandler}></input>
