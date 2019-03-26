@@ -32,7 +32,7 @@ class Interrupciones extends Component{
         return(
             <div className="Conten">
             <Contador tiempo={this.props.tiempo}/>
-            <select onChange={this.changePagina} className="paginas">
+            <select onChange={this.changePagina} className="paginas" value={this.state.pagina}>
                 {opciones}
             </select>
             <button onClick={this.ejecutar}>Ejec</button>
