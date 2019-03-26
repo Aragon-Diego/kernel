@@ -142,6 +142,7 @@ class Contenedor extends Component{
         console.log(numero)
         let proceso=this.state.listo[0];
         let paginas=proceso.paginas;
+        
         if(paginas[numero].r==1){
             paginas[numero].ultAccs=this.state.tiempoActual;
             paginas[numero].accs=String(1+parseInt(paginas[numero].accs));
@@ -194,19 +195,34 @@ class Contenedor extends Component{
                 }
                 if(this.state.algoritmoMemoria==="FIFO"){
                     this.memoriaFifo(paginasCargadas,paginas[numero]);
-                    this.ejecutarHandler()  
+                    this.ejecutarHandler();
+                    this.listoABloqueado();  
                 }else if(this.state.algoritmoMemoria==="LRU"){
                     this.memoriaLru(paginasCargadas,paginas[numero]);
-                    this.ejecutarHandler()
+                    this.ejecutarHandler();
+                    this.listoABloqueado();
                 }else if(this.state.algoritmoMemoria==="LFU"){
                     this.memoriaLfu(paginasCargadas,paginas[numero]);
-                    this.ejecutarHandler()
+                    this.ejecutarHandler();
+                    this.listoABloqueado();
                 }else if(this.state.algoritmoMemoria==="NUR"){
                     this.memoriaNur(paginasCargadas,paginas[numero]);
+                    this.ejecutarHandler();
+                    this.listoABloqueado();
                 }
             }
         }  
         return true;
+    }
+    listoABloqueado=()=>{
+        let listo=[...this.state.listo]
+        listo.reverse()
+        let pop=listo.pop()
+        listo.reverse()
+        this.state.bloqueado.push(pop)
+        this.setState({
+            listo:listo
+        })
     }
     changeAlgoritmoMemoriaHandler=(event)=>{
         let valor=event.target.value

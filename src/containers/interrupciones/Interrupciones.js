@@ -17,6 +17,12 @@ class Interrupciones extends Component{
             pagina:event.target.value
         })
     }
+    ejecutar=()=>{
+        this.props.ejecutar(this.state.pagina)
+        this.setState({
+            pagina:0
+        })
+    }
     render(){
         let opciones=this.props.ejecPaginas;
         if(opciones===null){
@@ -29,7 +35,7 @@ class Interrupciones extends Component{
             <select onChange={this.changePagina} className="paginas">
                 {opciones}
             </select>
-            <button onClick={()=>this.props.ejecutar(this.state.pagina)}>Ejec</button>
+            <button onClick={this.ejecutar}>Ejec</button>
             <p className="inter1">Interrupcion: </p>
             <select className="select2" onChange={this.changeVal} value={this.state.valor}>
                 <option value="SVC1">SVC de solicitud de I/O</option>
